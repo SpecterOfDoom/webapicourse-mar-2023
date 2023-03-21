@@ -1,6 +1,7 @@
 
 
 using EmployeesApi.Adapaters;
+using EmployeesApi.Controllers.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmployeesApi
@@ -18,6 +19,7 @@ namespace EmployeesApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<DepartmentsLookup>();
+            builder.Services.AddScoped<ILookupEmployees,EntityFrameworkEmployeeLookup>();  
 
             var sqlConnectionString = builder.Configuration.GetConnectionString("employees");
             Console.WriteLine("Using this connection string " + sqlConnectionString);
