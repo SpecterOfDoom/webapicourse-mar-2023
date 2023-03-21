@@ -19,9 +19,17 @@ namespace EmployeesApi
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<DepartmentsLookup>();
 
+            var sqlConnectionString = builder.Configuration.GetConnectionString("employees");
+            Console.WriteLine("Using this connection string " + sqlConnectionString);
+
+            if(sqlConnectionString == null) 
+            {
+                throw new Exception("Don't start this api!  Can't connect to a database");
+            }
+
             builder.Services.AddDbContext<EmployeesDataContext>(options =>
             {
-                options.UseSqlServer("connection string here");
+                options.UseSqlServer(sqlConnectionString);
             });
 
             var app = builder.Build();
