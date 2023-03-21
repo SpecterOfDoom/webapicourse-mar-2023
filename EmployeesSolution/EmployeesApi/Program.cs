@@ -1,5 +1,8 @@
 
 
+using EmployeesApi.Adapaters;
+using Microsoft.EntityFrameworkCore;
+
 namespace EmployeesApi
 {
     public class Program
@@ -15,6 +18,11 @@ namespace EmployeesApi
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<DepartmentsLookup>();
+
+            builder.Services.AddDbContext<EmployeesDataContext>(options =>
+            {
+                options.UseSqlServer("connection string here");
+            });
 
             var app = builder.Build();
 
