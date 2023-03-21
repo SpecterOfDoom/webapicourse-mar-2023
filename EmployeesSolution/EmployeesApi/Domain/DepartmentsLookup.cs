@@ -1,4 +1,6 @@
 ﻿using EmployeesApi.Adapaters;
+using EmployeesApi.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace EmployeesApi.Domain;
@@ -13,12 +15,9 @@ public class DepartmentsLookup
     }
     public async Task<List<DepartmentItem>> GetDepartmentsAsync()
     {
-                return new List<DepartmentItem>
-        {
-            new DepartmentItem("DEV", "Developers"),
-            new DepartmentItem("QA", "Quality Assurance Analysts"),
-            new DepartmentItem("SALES", "Sales Engineers")
-        };
-
+        var response = await _context.Departments
+            .Select(dept => new DepartmentItem(dept.Code, dept.Description))
+            .ToListAsync();
+        return response;
     }
 }
