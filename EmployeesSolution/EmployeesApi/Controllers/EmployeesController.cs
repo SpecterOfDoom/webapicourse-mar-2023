@@ -1,16 +1,35 @@
 ﻿
 
+using EmployeesApi.Controllers.Domain;
+using Microsoft.EntityFrameworkCore;
+
 namespace EmployeesApi.Controllers;
 
 public class EmployeesController : ControllerBase
 {
-
+    private readonly EmployeesDataContext _context;
     private readonly ILookupEmployees _employeeLookupService;
+    private readonly IManageEmployees _employeeManager;
 
-    public EmployeesController(ILookupEmployees employeeLookupService)
+    public EmployeesController(EmployeesDataContext context, ILookupEmployees employeeLookupService,IManageEmployees employeeManager)
     {
+        _context = context;
         _employeeLookupService = employeeLookupService;
+        _employeeManager = employeeManager;
     }
+
+    [HttpPut("/employees/{employeeId}/contact-information/home")]
+    public async Task<ActionResult> UpdateHomeContactInformation([FromRoute] string employeeId, [FromBody] HomeContactItem contactItem)
+    {
+        if(!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        var foundAndUpdated = await _employeeManager.UpdateContactInfoAsync(employeeId, contactItem);
+        return foundAndUpdated ? Ok(contactItem) : NotFound();
+    }
+
+
 
     [HttpGet("/employees/{employeeId}/contact-information/home")]
     public async Task<ActionResult<ContactItem>> GetEmployeeHomeContactInfo(string employeeId)

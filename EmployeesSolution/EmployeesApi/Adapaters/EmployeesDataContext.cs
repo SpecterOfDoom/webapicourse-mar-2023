@@ -13,4 +13,6 @@ public class EmployeesDataContext : DbContext
 
     public DbSet<DepartmentEntity> Departments { get; set; }
     public DbSet<EmployeeEntity> Employees { get; set; }
+
+    public DbSet<HiringRequestEntity> HiringRequests { get; set; }  
 }
