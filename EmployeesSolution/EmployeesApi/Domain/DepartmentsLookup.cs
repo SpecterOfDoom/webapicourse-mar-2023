@@ -1,23 +1,31 @@
-﻿using EmployeesApi.Adapaters;
-using EmployeesApi.Models;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace EmployeesApi.Domain;
 
-public class DepartmentsLookup
+public class DepartmentsLookup : ILookupDepartments
 {
     private readonly EmployeesDataContext _context;
+    private readonly MapperConfiguration _config;
 
-    public DepartmentsLookup(EmployeesDataContext context) 
+    public DepartmentsLookup(EmployeesDataContext context, MapperConfiguration config)
     {
         _context = context;
+        _config = config;
     }
+
     public async Task<List<DepartmentItem>> GetDepartmentsAsync()
     {
-        var response = await _context.Departments
-            .Select(dept => new DepartmentItem(dept.Code, dept.Description))
-            .ToListAsync();
+        // Never use .Result! Always use the Async version of methods, and await them.
+
+        var response = await _context.Departments                
+                .OrderBy(dept => dept.Code)
+              .ProjectTo<DepartmentItem>(_config)
+              .ToListAsync();
+
+
         return response;
+
     }
 }
